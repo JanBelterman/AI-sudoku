@@ -1,4 +1,4 @@
-package Sudoku;
+package SudokuTree;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -7,14 +7,16 @@ import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.*;
 
-/* Class representing the Sudoku.GUI
+/* Class representing the SudokuTree.GUI
  *
  * Author: Matt Tacchino
  *
- * Creates the interactive Sudoku.GUI to support the sudoku solver using GridBagLayout.
+ * Creates the interactive SudokuTree.GUI to support the sudoku solver using GridBagLayout.
  * Frame is minimum 300x300px resizable
  *
  * There are 5 main parts:
@@ -27,7 +29,7 @@ import javax.swing.*;
  */
 public class GUI {
 
-    private Cell[][] board;
+    private int[][] board;
 
     private JFrame frame = new JFrame("Sudoku Solver");
     private JTextField textField[][] = new JTextField[9][9];
@@ -44,19 +46,19 @@ public class GUI {
         }
     }
 
-    void displayNewState(Cell[][] board) {
+    void displayNewState(int[][] board) {
         this.board = board;
     }
 
     public void sudokuTableToGUI(){
         for (int y = 0; y < 9; y++){
             for (int x = 0; x < 9; x++){
-                if (board[y][x].getNumber() != 0) {
+                if (board[y][x] != 0) {
                     textField[x][y].setFont(new Font("Tahoma", Font.BOLD, 14));
                 } else {
                     textField[x][y].setFont(new Font("Tahoma", Font.PLAIN, 14));
                 }
-                textField[x][y].setText(String.valueOf(board[y][x].getNumber()));
+                textField[x][y].setText(String.valueOf(board[y][x]));
             }
         }
     }
@@ -104,7 +106,7 @@ public class GUI {
         frame.setVisible(true);
     }
 
-    /* Nested class for the grid panel used in the Sudoku.GUI */
+    /* Nested class for the grid panel used in the SudokuTree.GUI */
     public class GridPanel extends JPanel{
         private static final long serialVersionUID = -6157041650150998205L;
 

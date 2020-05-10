@@ -1,3 +1,5 @@
+package SudokuTree;
+
 public class Main {
 
     public static int[][] GRID_TO_SOLVE = {

@@ -1,75 +1,23 @@
-package Sudoku;
+package SudokuRecursive;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 
 public class Sudoku {
-    private Cell[][] originGrid;
+
     private static final int UNASSIGNED = 0;
+    private final Cell[][] grid;
 
     public Sudoku(Cell[][] grid) {
-        originGrid = grid;
+        this.grid = grid;
     }
 
-    public Cell[][] getOriginGrid() {
-        return originGrid;
+    public void changeCell(int row, int col, int number) {
+        grid[row][col].setNumber(number);
     }
 
-    public int i = 0;
-
-    public boolean solveSudoku(Cell[][] grid, GUI gui) throws InterruptedException {
-        for(int row = 0; row < 9; row++) {
-            for(int col = 0; col < 9; col++) {
-
-                if(grid[row][col].getNumber() == UNASSIGNED) {
-                    for(int number = 1; number <= 9; number++) {
-
-                        if(isAllowed(grid, row, col, number, getCellsInSameCage(grid, grid[row][col].getCageIndex()))) {
-                            Cell[][] newGrid = deepCopy(grid);
-                            newGrid[row][col].setNumber(number);
-
-                            Cell[] cellsInCage = getCellsInSameCage(newGrid, grid[row][col].getCageIndex()).toArray(new Cell[0]);
-                            Cell[] cellsInRow = getCellsInSameRow(newGrid, row);
-                            Cell[] cellsInCol = getCellsInSameCol(newGrid, col);
-                            Cell[] cellsInBox = getCellsInSameBox(newGrid, col, row);
-
-                            List<Cell> cellsToRemovePossibleNr = new ArrayList<>(cellsInCage.length + cellsInRow.length + cellsInCol.length + cellsInBox.length);
-                            Collections.addAll(cellsToRemovePossibleNr, cellsInCage);
-                            Collections.addAll(cellsToRemovePossibleNr, cellsInBox);
-                            Collections.addAll(cellsToRemovePossibleNr, cellsInRow);
-                            Collections.addAll(cellsToRemovePossibleNr, cellsInCol);
-                            for (Cell cell : cellsToRemovePossibleNr) {
-                                cell.removePossibleNr(number);
-                            }
-
-                            if (!containsCellWithoutPossibleNrs(newGrid)) {
-                                i++;
-                                this.originGrid = newGrid;
-//                                displaySudoku(newGrid);
-                                if (i % 5 == 0) {
-                                    gui.displayNewState(newGrid);
-                                    gui.sudokuTableToGUI();
-                                }
-//                                Thread.sleep(500);
-                                if (solveSudoku(newGrid, gui)) {
-                                    return true;
-                                }
-                            }
-                        }
-
-                    }
-                    return false; // Backtrack
-
-                }
-
-            }
-        }
-        return true;
-    }
-
-    private boolean containsCellWithoutPossibleNrs(Cell[][] grid) {
+    public boolean containsCellWithoutPossibleNrs() {
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {
                 if (grid[i][j].getNumber() == UNASSIGNED && !grid[i][j].hasPossibleNrs()) {
@@ -80,11 +28,11 @@ public class Sudoku {
         return false;
     }
 
-    private Cell[] getCellsInSameRow(Cell[][] grid, int row) {
+    public Cell[] getCellsInSameRow(int row) {
         return grid[row];
     }
 
-    private Cell[] getCellsInSameCol(Cell[][] grid, int col) {
+    public Cell[] getCellsInSameCol(int col) {
         List<Cell> cells = new ArrayList<>();
         for(int i = 0; i < 9; i++) {
             cells.add(grid[i][col]);
@@ -92,7 +40,7 @@ public class Sudoku {
         return cells.toArray(new Cell[0]);
     }
 
-    private Cell[] getCellsInSameBox(Cell[][] grid, int col, int row) {
+    public Cell[] getCellsInSameBox(int col, int row) {
         List<Cell> cells = new ArrayList<>();
 
         int r = row - row % 3;
@@ -107,17 +55,17 @@ public class Sudoku {
         return cells.toArray(new Cell[0]);
     }
 
-    private Cell[][] deepCopy(Cell[][] grid) {
+    public Sudoku deepCopy() {
         Cell[][] copy = new Cell[9][9];
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 copy[i][j] = grid[i][j].deepCopy();
             }
         }
-        return copy;
+        return new Sudoku(copy);
     }
 
-    private boolean containsInRow(Cell[][] grid, int row, int number) {
+    private boolean containsInRow(int row, int number) {
         for(int i = 0; i < 9; i++)
         {
             if(grid[row][i].getNumber() == number) {
@@ -128,7 +76,7 @@ public class Sudoku {
         return false;
     }
 
-    private boolean containsInCol(Cell[][] grid, int col, int number) {
+    private boolean containsInCol(int col, int number) {
         for(int i = 0; i < 9; i++) {
             if(grid[i][col].getNumber() == number) {
                 return true;
@@ -138,7 +86,7 @@ public class Sudoku {
         return false;
     }
 
-    private boolean containsInBox(Cell[][] grid, int row, int col, int number) {
+    private boolean containsInBox(int row, int col, int number) {
         int r = row - row % 3;
         int c = col - col % 3;
 
@@ -163,7 +111,7 @@ public class Sudoku {
         return false;
     }
 
-    private List<Cell> getCellsInSameCage(Cell[][] grid, int cageIndex) {
+    public List<Cell> getCellsInSameCage(int cageIndex) {
         List<Cell> cells = new ArrayList<>();
 
         for(int row = 0; row < 9; row++) {
@@ -209,8 +157,12 @@ public class Sudoku {
         return wholeCageFilled && realCageTotal != wantedCageTotal;
     }
 
-    private boolean isAllowed(Cell[][] grid, int row, int col, int number, List<Cell> cellsInCage) {
-        return !(containsInRow(grid, row, number) || containsInCol(grid, col, number) || containsInBox(grid, row, col, number) || containsInCage(cellsInCage, number) || cageNrExceeded(cellsInCage, number) || cageNrDoesNotMatchWhenWholeCageIsFilled(cellsInCage, number) || !grid[row][col].getPossibleNrs().contains(number));
+    public boolean isAllowed(int row, int col, int number, List<Cell> cellsInCage) {
+        return !(containsInRow(row, number) || containsInCol(col, number) || containsInBox(row, col, number) || containsInCage(cellsInCage, number) || cageNrExceeded(cellsInCage, number) || cageNrDoesNotMatchWhenWholeCageIsFilled(cellsInCage, number) || !grid[row][col].getPossibleNrs().contains(number));
+    }
+
+    public Cell[][] getGrid() {
+        return this.grid;
     }
 
     public void displaySudoku(Cell[][] grid) {

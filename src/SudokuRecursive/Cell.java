@@ -1,4 +1,4 @@
-package Sudoku;
+package SudokuRecursive;
 
 import java.util.ArrayList;
 import java.util.Arrays;

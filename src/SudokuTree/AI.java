@@ -1,3 +1,5 @@
+package SudokuTree;
+
 import java.util.ArrayList;
 
 public class AI {
@@ -60,7 +62,7 @@ public class AI {
                 }
             }
 
-            // Sudoku solved?
+            // SudokuTree.Sudoku solved?
             if (!nextStepFound) {
                 this.gui.displayNewState(nextStep.board);
                 gui.sudokuTableToGUI();

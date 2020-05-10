@@ -1,21 +1,8 @@
-package Sudoku;
+package SudokuRecursive;
 
-public class SudokuSolver {
+public class Main {
 
-    public static void main(String[] args) throws InterruptedException {
-        GUI gui = new GUI();
-        gui.createGUI();
-
-        Sudoku s = new Sudoku(GRID_TO_SOLVE);
-        s.displaySudoku(s.getOriginGrid());
-        long startTime = System.nanoTime();
-        s.solveSudoku(s.getOriginGrid(), gui);
-        long millis = System.nanoTime() - startTime;
-        System.out.println(millis / 1000000 + " milliseconds to solve");
-        s.displaySudoku(s.getOriginGrid());
-        gui.displayNewState(s.getOriginGrid());
-        gui.sudokuTableToGUI();
-    }
+    public GUI gui = new GUI();
 
     public static Cell[][] GRID_TO_SOLVE = {
             {new Cell(0, 3, 1),  new Cell(0, 0, 1),  new Cell(0, 15, 2), new Cell(0, 0, 2),  new Cell(0, 0, 2),  new Cell(0, 22, 3), new Cell(0, 4, 4),  new Cell(0, 16, 5), new Cell(0, 15, 6)},
@@ -28,4 +15,51 @@ public class SudokuSolver {
             {new Cell(0, 0, 20), new Cell(0, 8, 25), new Cell(0, 16, 26),new Cell(0, 0, 22), new Cell(0, 0, 22), new Cell(0, 15, 27),new Cell(0, 0, 27), new Cell(0, 0, 24), new Cell(0, 0, 24)},
             {new Cell(0, 0, 20), new Cell(0, 0, 25), new Cell(0, 0, 26), new Cell(0, 0, 22), new Cell(0, 13, 28),new Cell(0, 0, 28), new Cell(0, 0, 28), new Cell(0, 17, 29),new Cell(0, 0, 29)},
     };
+
+    public static void main(String[] args) throws InterruptedException {
+        GUI gui = new GUI();
+        gui.createGUI();
+        Sudoku sudoku = new Sudoku(GRID_TO_SOLVE);
+        SudokuSolver solver = new SudokuSolver();
+
+        SudokuSolverRunner runner = new SudokuSolverRunner(gui, solver, sudoku);
+        runner.run();
+    }
+
+}
+
+class SudokuSolverRunner implements CellChanged {
+
+    public GUI gui;
+    public int steps;
+
+    public SudokuSolver sudokuSolver;
+    public Sudoku sudoku;
+
+    public SudokuSolverRunner(GUI gui, SudokuSolver sudokuSolver, Sudoku sudoku) {
+        this.gui = gui;
+        this.sudokuSolver = sudokuSolver;
+        this.sudokuSolver.setCellChanged(this);
+        this.sudoku = sudoku;
+    }
+
+    public void run() throws InterruptedException {
+        long startTime = System.nanoTime();
+        sudokuSolver.solve(sudoku);
+        System.out.println((System.nanoTime() - startTime) / 1000000 + " milliseconds to solve");
+
+        gui.displayNewState(sudokuSolver.getSolvedSudoku().getGrid());
+        gui.sudokuTableToGUI();
+    }
+
+    @Override
+    public void cellChanged(Sudoku sudoku) throws InterruptedException {
+        steps++;
+        if (steps % 100 == 0) {
+            gui.displayNewState(sudoku.getGrid());
+            gui.sudokuTableToGUI();
+            Thread.sleep(25);
+        }
+    }
+
 }

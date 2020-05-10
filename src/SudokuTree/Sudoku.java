@@ -1,3 +1,5 @@
+package SudokuTree;
+
 public class Sudoku {
 
     public int[][] board;
