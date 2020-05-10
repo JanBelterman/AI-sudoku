@@ -17,6 +17,8 @@ public class Main {
     };
 
     public static void main(String[] args) throws InterruptedException {
+        System.out.println("\n\n------------------------------\n");
+
         GUI gui = new GUI();
         gui.createGUI();
         Sudoku sudoku = new Sudoku(GRID_TO_SOLVE);
@@ -24,6 +26,7 @@ public class Main {
 
         SudokuSolverRunner runner = new SudokuSolverRunner(gui, solver, sudoku);
         runner.run();
+        System.out.println("\n------------------------------");
     }
 
 }
@@ -45,8 +48,9 @@ class SudokuSolverRunner implements CellChanged {
 
     public void run() throws InterruptedException {
         long startTime = System.nanoTime();
-        sudokuSolver.solve(sudoku);
+        sudokuSolver.solve(sudoku, true);
         System.out.println((System.nanoTime() - startTime) / 1000000 + " milliseconds to solve");
+        System.out.println(steps + " steps to solve");
 
         gui.displayNewState(sudokuSolver.getSolvedSudoku().getGrid());
         gui.sudokuTableToGUI();
@@ -58,7 +62,7 @@ class SudokuSolverRunner implements CellChanged {
         if (steps % 100 == 0) {
             gui.displayNewState(sudoku.getGrid());
             gui.sudokuTableToGUI();
-            Thread.sleep(25);
+//            Thread.sleep(100);
         }
     }
 
