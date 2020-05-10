@@ -17,21 +17,21 @@ public class Sudoku {
     public void display() {
         for (int i = 1; i <= size; i++) {
             for (int j = 1; j <= size; j++) {
-                System.out.print(" " + board[i - 1][j - 1]);
+                // system.out.print(" " + board[i - 1][j - 1]);
                 if (j % 3 == 0 && j != size) {
-                    System.out.print(" |");
+                    // system.out.print(" |");
                 }
             }
 
-            System.out.println();
+            // system.out.println();
             if (i % 3 == 0 && i != size) {
-                System.out.println(" ---------------------");
+                // system.out.println(" ---------------------");
             }
         }
 
-        System.out.println();
-        System.out.println();
-        System.out.println();
+        // system.out.println();
+        // system.out.println();
+        // system.out.println();
     }
 
     public boolean isValid() {

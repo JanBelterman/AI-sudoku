@@ -14,7 +14,8 @@ public class AI {
     }
 
     public void solve() throws InterruptedException {
-        while(true) {
+        int iterations = 0;
+        while (true) {
 //            Thread.sleep(50);
 
             Sudoku nextStep = new Sudoku(currentNode.sudoku.board, currentNode.sudoku.size);
@@ -39,9 +40,10 @@ public class AI {
 
             // Displays it
 //            nextStep.display();
-            this.gui.displayNewState(nextStep.board);
-            gui.sudokuTableToGUI();
-
+            if (iterations % 50000 == 0) {
+                this.gui.displayNewState(nextStep.board);
+                gui.sudokuTableToGUI();
+            }
 
             // Determines next step
             if (nextStep.isValid()) { // Valid next state
@@ -60,8 +62,12 @@ public class AI {
 
             // Sudoku solved?
             if (!nextStepFound) {
+                this.gui.displayNewState(nextStep.board);
+                gui.sudokuTableToGUI();
                 break;
             }
+
+            iterations++;
         }
     }
 

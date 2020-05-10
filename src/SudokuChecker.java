@@ -18,7 +18,7 @@ public class SudokuChecker {
             // outside 1 and 9 is another way of doing
             // the same thing.
             if (value < 0 || value > 9){
-                System.out.println( "Invalid value" );
+                // system.out.println( "Invalid value" );
                 return -1;
             }
             //Checking for repeated values.
@@ -44,7 +44,7 @@ public class SudokuChecker {
             // outside 1 and 9 is another way of doing
             // the same thing.
             if (grid[i][col] < 0 || grid[i][col] > 9){
-                System.out.println( "Invalid value" );
+                // system.out.println( "Invalid value" );
                 return -1;
             }
             // Checking for repeated values.
@@ -73,7 +73,7 @@ public class SudokuChecker {
                         // outside 1 and 9 is another way of doing
                         // the same thing.
                         if (grid[r][c] < 0 || grid[r][c] > 9){
-                            System.out.println( "Invalid value" );
+                            // system.out.println( "Invalid value" );
                             return -1;
                         }
                         // Checking for repeated values.
